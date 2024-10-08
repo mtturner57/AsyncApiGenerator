@@ -1,0 +1,3 @@
+file_path = { path ~ "." ~ extension }
+path = @{ (ASCII_ALPHA | ASCII_DIGIT | "/" | "_" | "-" | "..")* } // Matches the file path
+extension = @{ ASCII_ALPHA+ } // Matches the file extension
