@@ -2,11 +2,13 @@ use std::error::Error;
 
 use clap::Parser;
 
+pub mod enums;
 pub mod services;
 pub mod structs;
 
-use structs::{file_type::SupportedTypes, options_arg::OptionsArg};
-use services::path_reader::{load_yaml_into_string, check_file_type};
+use enums::file_type::SupportedTypes;
+use structs::options_arg::OptionsArg;
+use services::path_reader::{load_yaml_into_string, check_file_type, check_async_version};
 
 fn main() {    
     let args: OptionsArg = OptionsArg::parse();
