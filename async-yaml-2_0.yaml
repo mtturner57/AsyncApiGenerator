@@ -1,0 +1,45 @@
+asyncapi: '2.0.0'
+info:
+  title: Chat Application
+  version: '1.0.0'
+  description: A simple chat application using AsyncAPI.
+  termsOfService: 'https://example.com/terms'
+  contact:
+    name: Support
+    email: support@example.com
+    url: 'https://example.com/support'
+
+servers:
+  production:
+    url: 'chat.example.com/ws'
+    protocol: wss
+
+channels:
+  messageSent:
+    description: Channel for sending messages.
+    subscribe:
+      summary: Receive a message from a user.
+      operationId: receiveMessage
+      message:
+        contentType: application/json
+        payload:
+          type: object
+          properties:
+            user:
+              type: string
+              description: The name of the user sending the message.
+            content:
+              type: string
+              description: The content of the message.
+            timestamp:
+              type: string
+              format: date-time
+              description: The time the message was sent.
+
+  messageReceived:
+    description: Channel for receiving messages.
+    publish:
+      summary: Send a message to a user.
+      operationId: sendMessage
+      message:
+        contentType: application/json
