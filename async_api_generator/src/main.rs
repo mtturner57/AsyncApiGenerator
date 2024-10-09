@@ -8,7 +8,7 @@ pub mod structs;
 
 use enums::file_type::SupportedTypes;
 use structs::options_arg::OptionsArg;
-use services::path_reader::{load_yaml_into_string, check_file_type, check_async_version};
+use services::path_reader::{load_path_into_string, check_file_type, check_async_version};
 
 fn main() {    
     let args: OptionsArg = OptionsArg::parse();
@@ -18,8 +18,15 @@ fn main() {
 
     dbg!(g);
 
-    let contents: Result<String, Box<dyn Error>> = load_yaml_into_string(path);
-    let file_type: SupportedTypes = check_file_type(path);
+    let contents: Result<String, Box<dyn Error>> = load_path_into_string(path);
+    let file_type_result: Result<SupportedTypes, String> = check_file_type(path);
+
+    match file_type_result {
+        Ok(file_type) => match file_type {
+            SupportedTypes:: Yaml => println!("Function coming soon!")
+        },
+        Err(e) => eprintln!("Error in check_file_type: {}", e)
+    };
 
     match contents {
         Ok(value) => {
@@ -29,7 +36,6 @@ fn main() {
             eprintln!("Error: {}", e);
         }
     }
-
-
-    dbg!(&file_type);
+    let version = check_async_version(path);
+    println!("{}", &version);
 }

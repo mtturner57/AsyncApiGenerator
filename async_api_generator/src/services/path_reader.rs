@@ -8,9 +8,9 @@ use pest_derive::Parser;
 #[grammar = "services/grammer.pest"]
 struct FileParser;
 
-const SUPPORTED_EXTENSIONS: [&str; 1] = ["yaml"]; 
+pub const SUPPORTED_EXTENSIONS: [&str; 1] = ["yaml"]; 
 
-pub fn load_yaml_into_string(path: &String) -> Result<String, Box<dyn Error>> {
+pub fn load_path_into_string(path: &String) -> Result<String, Box<dyn Error>> {
     let contents: String = fs::read_to_string(path)?;
     Ok(contents)
 }
@@ -36,16 +36,18 @@ pub fn check_file_type(path: &String) -> Result<SupportedTypes, String>{
             }
         }        
         Err(e) => {
+            eprintln!("File parse error: {}", e);
             None
         }
     };
 
     match file_type {
         Some(ref extension) => 
-            match extension.as_str() {
-                "yaml" => Ok(SupportedTypes::Yaml)
+            match extension.to_lowercase().as_str() {
+                "yaml" => Ok(SupportedTypes::Yaml),
+                _ => Err(format!("Unsupported file type. Supported types are: [{}]", SUPPORTED_EXTENSIONS.join(",")))
             },
-        None => Err(String::from("Unsupported file type or invalid string."))
+        None => Err(String::from("Invalid string."))
     }
 }
 
