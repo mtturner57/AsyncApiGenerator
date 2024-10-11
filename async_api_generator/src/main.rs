@@ -8,34 +8,21 @@ pub mod structs;
 
 use enums::file_type::SupportedTypes;
 use structs::options_arg::OptionsArg;
-use services::path_reader::{load_path_into_string, check_file_type, check_async_version};
+use services::path_reader::{check_async_version, check_file_type};
 
-fn main() {    
+fn main() -> Result<(), Box<dyn Error>>{    
     let args: OptionsArg = OptionsArg::parse();
+    let file_type: SupportedTypes = check_file_type(&args.file_path)?;
 
-    let path: &String = &args.file_path;
-    let g: &String = &args.source_destination;
+    let content = match file_type{
+        SupportedTypes::Yaml => run_yaml_reader(args.file_path)
+    }?;
 
-    dbg!(g);
+    Ok(())
+}
 
-    let contents: Result<String, Box<dyn Error>> = load_path_into_string(path);
-    let file_type_result: Result<SupportedTypes, String> = check_file_type(path);
-
-    match file_type_result {
-        Ok(file_type) => match file_type {
-            SupportedTypes:: Yaml => println!("Function coming soon!")
-        },
-        Err(e) => eprintln!("Error in check_file_type: {}", e)
-    };
-
-    match contents {
-        Ok(value) => {
-            dbg!(value);
-        }
-        Err(e) => {
-            eprintln!("Error: {}", e);
-        }
-    }
-    let version = check_async_version(path);
+fn run_yaml_reader(path: String) -> Result<String, Box<dyn Error>>{
+    let version = check_async_version(&path)?;
     println!("{}", &version);
+    Ok(String::from("test"))
 }
