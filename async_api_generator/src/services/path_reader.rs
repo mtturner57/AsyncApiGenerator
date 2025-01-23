@@ -1,5 +1,6 @@
-use std::{error::Error, fs, process::ExitCode};
-use crate::enums::file_type::SupportedTypes;
+use std::{error::Error, fs};
+//, process::ExitCode
+use crate::{enums::file_type::SupportedTypes, structs::version_file_contents::VersionFileContents};
 
 use pest::{iterators::Pairs, Parser};
 use pest_derive::Parser;
@@ -10,7 +11,7 @@ struct FileParser;
 
 pub const SUPPORTED_EXTENSIONS: [&str; 1] = ["yaml"]; 
 
-pub fn load_path_into_string(path: &String) -> Result<String, Box<dyn Error>> {
+pub fn load_path_into_string(path: &str) -> Result<String, Box<dyn Error>> {
     let contents: String = fs::read_to_string(path)?;
     Ok(contents)
 }
@@ -24,7 +25,7 @@ pub fn check_file_type(path: &String) -> Result<SupportedTypes, Box<dyn Error>>{
     }
 }
 
-pub fn check_async_version(path: &String) -> Result<String, Box<dyn Error>> {
+pub fn check_async_version(path: &str) -> Result<VersionFileContents, Box<dyn Error>> {
     let file_contents_result = load_path_into_string(path);
 
     let contents: String = file_contents_result?;
@@ -50,7 +51,12 @@ pub fn check_async_version(path: &String) -> Result<String, Box<dyn Error>> {
             None
         }
     };
+
+    let version_contents: VersionFileContents = VersionFileContents{
+        version: m.unwrap(), 
+        contents: contents
+    };
     
-    println!("{}", m.unwrap());
-    Ok(contents)
+    // println!("{}", m.unwrap());
+    Ok(version_contents)
 }

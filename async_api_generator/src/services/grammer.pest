@@ -1,12 +1,15 @@
-// This isn't workign but im not giving up on it yet. Keeping it here for now
 file_path = { path ~ "/" ~ filename ~ "." ~ extension }
 path = @{ (ASCII_ALPHA | ASCII_DIGIT | "/" | "_" | "-" | "..")* } // Matches the file path
 filename = @{ (ASCII_ALPHA | ASCII_DIGIT | "/" | "_" | "-")* }
-extension = @{ ASCII_ALPHA+ } // Matches the file extension\
+extension = @{ ASCII_ALPHA+ } // Matches the file extension
 
 async_version = { "asyncapi: \'" ~ version ~ "\'" }
-version = @{ ASCII_DIGIT+ ~ ASCII_DIGIT+ ~ ASCII_DIGIT+ }
+version = @{ ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT+ }
 
+/* 
+    *****FOR TESTING FAST AND LIVE***** 
+    https://pest.rs/#editor
+*/
 
 /*
 Storing for laters, how to do multiple matches, will be good for yaml parser
