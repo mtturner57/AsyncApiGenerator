@@ -26,11 +26,9 @@ pub fn check_file_type(path: &String) -> Result<SupportedTypes, Box<dyn Error>>{
 }
 
 pub fn check_async_version(path: &str) -> Result<VersionFileContents, Box<dyn Error>> {
-    let file_contents_result = load_path_into_string(path);
+    let file_contents_result = load_path_into_string(path)?;
 
-    let contents: String = file_contents_result?;
-
-    let m : Option<String> = match FileParser::parse(Rule::async_version, &contents) {
+    let m : Option<String> = match FileParser::parse(Rule::async_version, &file_contents_result) {
         Ok(mut pairs) => {
             if let Some(pair) = pairs.next() {
                 let mut inner_pairs: Pairs<'_, Rule> = pair.into_inner();
@@ -54,7 +52,7 @@ pub fn check_async_version(path: &str) -> Result<VersionFileContents, Box<dyn Er
 
     let version_contents: VersionFileContents = VersionFileContents{
         version: m.unwrap(), 
-        contents: contents
+        contents: file_contents_result
     };
     
     // println!("{}", m.unwrap());
